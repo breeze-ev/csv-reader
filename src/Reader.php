@@ -1,6 +1,6 @@
 <?php 
 
-namespace Breeze\CSV;
+namespace BreezeEV\CSV;
 
 class Reader
 {

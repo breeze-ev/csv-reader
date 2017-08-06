@@ -1,5 +1,5 @@
 {
-    "name": "breeze/csv-reader",
+    "name": "breeze-ev/csv-reader",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Breeze\\CSV\\": "src/"
+            "BreezeEV\\CSV\\": "src/"
         }
     }
 }
