@@ -9,16 +9,11 @@ class Reader extends AbstractReader
 
 
     /**
-     * file header for rule
+     * content rules
      * @var
      */
-    protected $headerRule;
+    protected $rules;
 
-    /**
-     * file contents for rule
-     * @var
-     */
-    protected $contentRule;
 
     /**
      * set file info
@@ -40,39 +35,67 @@ class Reader extends AbstractReader
 
     /**
      * define the rule of file
-     * @param $headerRule
-     * @param $contentRule
+     * @param $rules
      * @return $this
      */
-    public function setRule($headerRule, $contentRule){
-        $this->headerRule = $headerRule;
-        $this->contentRule = $contentRule;
+    public function setRules($rules){
+        if(isset($rules['header'])){
+            $this->rules['header'] = $rules['header'];
+        }
+
+        if(isset($rules['content'])){
+            $this->rules['content'] = $rules['content'];
+        }
+
+        if(isset($rules['name'])){
+            $this->rules['name'] = $rules['name'];
+        }
+
         return $this;
     }
 
     /**
      * get file contents
-     * @param $rule - if null, it will auto check contents
+     * @throws Exception
      * @return array
      */
-    public function getContentData($rule = null){
-
-        $this->headerRule = $rule;
+    public function getContentData(){
 
         $originalData = $this->load();
+        $header = [];
+        $content = [];
 
-        $header = $this->readSingleLine($originalData, $this->headerRule);
-        $content = $this->readMultiLine($originalData, $this->contentRule);
+        if($this->type === self::FIRST_LINE_TOTAL){
+            if(isset($this->rules['header'])){
+                $header = $this->readSingleLine($originalData['header'], $this->rules['header']);
+            }else{
+                throw new Exception('header rule not in rules');
+            }
+        }
+
+        if(isset($this->rules['content'])){
+            $content = $this->readMultiLine($originalData['content'], $this->rules['content']);
+        }else{
+            throw new Exception('content rule not in rules');
+        }
 
         return ['header' => $header, 'content' => $content];
     }
 
     /**
      * get file name data
+     * @param $separator
+     * @throws Exception
+     * @return array
      */
-    public function getFileNameData(){
+    public function getFileNameData($separator = '_'){
 
-
+        if(isset($this->rules['name'])){
+            $originalData = explode($separator, $this->file['name']);
+            return $this->readSingleLine($originalData, $this->rules['name']);
+        }else{
+            throw new Exception('name rule not in rules');
+        }
 
     }
 
@@ -93,8 +116,13 @@ class Reader extends AbstractReader
 
         $i = 0;
         while ($data = fgetcsv($reader)) {
+
             if ($i === 0) {
-                $d['header'] = $data;
+                if($this->type === self::FIRST_LINE_TOTAL || $this->type === self::FIRST_LINE_HEADER){
+                    $d['header'] = $data;
+                }else{
+                    $d['content'][] = $data;
+                }
             }
 
             if ($i > 0) {

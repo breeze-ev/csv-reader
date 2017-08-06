@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Breeze\\CSV\\' => array($baseDir . '/src'),
+    'BreezeEV\\CSV\\' => array($baseDir . '/src'),
 );

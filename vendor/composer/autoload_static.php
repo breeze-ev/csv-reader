@@ -9,12 +9,12 @@ class ComposerStaticInitfc3bbfb0621a669f023fc95f72bb42ee
     public static $prefixLengthsPsr4 = array (
         'B' => 
         array (
-            'Breeze\\CSV\\' => 11,
+            'BreezeEV\\CSV\\' => 13,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Breeze\\CSV\\' => 
+        'BreezeEV\\CSV\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
